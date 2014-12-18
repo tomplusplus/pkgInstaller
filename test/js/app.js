@@ -11,7 +11,7 @@ describe('pkgInstaller', function() {
         parsedPackages = parsePackages(mockPackages),
         packageGraph = new PackageDependencyGraph();
 
-        packagesParsed.forEach(function(pkg){
+        parsedPackages.forEach(function(pkg){
             packageGraph.addDependency(pkg[0],pkg[1]);
         });
 
@@ -25,5 +25,6 @@ describe('pkgInstaller', function() {
 
     it('should list all packages in correct order', function() {
         expect(packageGraph).toBeDefined();
+        console.log(packageGraph.graphIndex);
     });
 });

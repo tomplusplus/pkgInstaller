@@ -19,7 +19,8 @@ function PackageDependencyGraph(){
     this.orderedPackages = [];
     //TODO write out packages in proper order
 }
-PackageDependencyGraph.prototype.addDependencies = function(pkg,dep){
+PackageDependencyGraph.prototype.addDependency = function(pkg,dep){
+    var _this = this;
     this.graphIndex.push(pkg);
     this.graphIndex.push(dep);
     if (!this.dependencies.hasOwnProperty(dep)){
@@ -28,10 +29,10 @@ PackageDependencyGraph.prototype.addDependencies = function(pkg,dep){
     this.dependencies[dep].push(pkg);
 
     //TODO find a way to chain dependencies together
-    //chain dependencies : recursion is fun!!! :)
+    //chain dependencies : recursion is fun!!!
     if(typeof this.dependencies[pkg] !== 'undefined'){
         this.dependencies[pkg].forEach(function(p){
-            this.addDependency(p,dep);
+            _this.addDependency(p,dep);
         });
     }
 };
