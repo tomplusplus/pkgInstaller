@@ -4,12 +4,19 @@
  */
 'use strict';
 
+function parsePackages(packages){
+    var parsed = [];
+    packages.forEach(function(pkg){
+        var delimiter = pkg.indexOf(": ") >= 0? ": ": ":";
+        parsed.push(pkg.split(delimiter));
+    });
+    return parsed;
+}
+
 function PackageDependencyGraph(){
     this.dependencies = {};
     this.graphIndex = [];
-
-
-
+    this.orderedPackages = [];
     //TODO write out packages in proper order
 }
 PackageDependencyGraph.prototype.addDependencies = function(pkg,dep){

@@ -8,18 +8,22 @@ describe('pkgInstaller', function() {
         'Fraudstream: Leetmeme',
         'Ice: KittenService'
         ],
-        parsedPackages = [];
+        parsedPackages = parsePackages(mockPackages),
+        packageGraph = new PackageDependencyGraph();
+
+        packagesParsed.forEach(function(pkg){
+            packageGraph.addDependency(pkg[0],pkg[1]);
+        });
+
 
     it('should parse out packages into a multi-dimensional array', function(){
-        // expect parsed packages to return a multi-dimensional array
+        expect(parsedPackages).toBeDefined();
+        parsedPackages.forEach(function(p,i){
+            expect((p[0]+p[1])).toEqual(mockPackages[i].replace(": ",'').replace(':',''));
+        });
     });
 
     it('should list all packages in correct order', function() {
-        //var packageGraph = new PackageDependencyGraph();
-        //add packages to package graph
-        parsedPackages.forEach(function(pkg){
-            //expect each package dependency to have a lower index value than its own.
-            //expect to find no cycles
-        });
+        expect(packageGraph).toBeDefined();
     });
 });
