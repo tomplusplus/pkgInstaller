@@ -4,8 +4,6 @@
  */
 'use strict';
 
-//TODO Check for cycles
-
 
     //extend Array prototype to have a unique function
     Array.prototype.unique = function(){
