@@ -216,54 +216,44 @@ module.exports = function (grunt) {
         },
 
         // *******  Test settings ********************
+        browserify: {
+            dist: {
+                files: {
+                    'dist/app.js': [
+                        'dist/js/**/*.js'
+                    ]
+                }
+            },
+            //make build for
+            specs: {
+                files: {
+                    'dist/specs.js': [
+                        //actual files
+                        'dist/js/**/*.js',
+                        //now the unit tests
+                        'test/**/*.js'
+                    ]
+                }
+            }
+        },
         karma: {
             unit: {
-                configFile: 'karma.unit.conf.js',
-                singleRun: true
+                options: {
+                    files: ['test/**/*.js']
+                }
             }
         },
 
-        protractor: {
-            options: {
-                configFile: 'protractor.e2e.conf.js', //your protractor config file
-                keepAlive: true, // If false, the grunt process stops when the test fails.
-                noColor: false, // If true, protractor will not use colors in its output.
-                args: {
-                    verbose: true,
-                    includeStackTrace: true
-                }
-            },
-            chrome: {
+        jasmine: {
+            dev: {
+                src: ['dist/js/app.js'],
                 options: {
-                    args: {
-                        browser: 'chrome'
-                    }
-                }
-            },
-            ie: {
-                options: {
-                    args: {
-                        browser: 'internet explorer'
-                    }
-                }
-            },
-            runFirfox: {
-                options: {
-                    args: {
-                        browser: 'firefox'
-                    }
-                }
-            },
-            runSafari: {
-                options: {
-                    args: {
-                        browser: 'safari'
-                    }
+                    specs: 'dist/specs.js',
+                    helpers: [],
+                    vendor: []
                 }
             }
-
         }
-
     });
 
     //**** REGISTERED TASK *****
@@ -291,9 +281,7 @@ module.exports = function (grunt) {
     });
 
     // Unit Tests
-    grunt.registerTask('test', [
-        'karma'
-    ]);
+    grunt.registerTask('test', ['browserify:specs', 'jasmine']);
 
 
     grunt.registerTask('dev', [
@@ -320,16 +308,6 @@ module.exports = function (grunt) {
         'dev'
     ]);
 
-
-
-    grunt.registerTask('protractor-chrome', ['protractor:chrome']);
-    grunt.registerTask('protractor-safari', ['protractor:safari']);
-    grunt.registerTask('protractor-firefox', ['protractor:firefox']);
-    grunt.registerTask('protractor-ie', ['protractor:ie']);
-    grunt.registerTask('e2e', ['concurrent:protractor_test_chrome']);
-
-    //TODO: always runs chrome not able to run ie
-    grunt.registerTask('e2eAll', ['concurrent:protractor_test_all']);
 
 
 };
