@@ -1,0 +1,4 @@
+pkgInstaller
+============
+
+Example dependency manager 
