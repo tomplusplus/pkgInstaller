@@ -1,12 +1,14 @@
 
 describe('pkgInstaller', function() {
+
     var mockPackages = [
-        'KittenService:',
+        'KittenService: TomInstaller',
         'Leetmeme: Cyberportal',
         'Cyberportal: Ice',
         'CamelCaser: KittenService' ,
         'Fraudstream: Leetmeme',
-        'Ice:'
+        'Ice: KittenService',
+        'TomInstaller:'
         ],
         parsedPackages = parsePackages(mockPackages),
         packageGraph = new PackageDependencyGraph();
@@ -15,6 +17,7 @@ describe('pkgInstaller', function() {
             packageGraph.addDependency(pkg[0],pkg[1]);
         });
         packageGraph.orderDependencies();
+
 
 
     it('should parse out packages into a multi-dimensional array', function(){

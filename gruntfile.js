@@ -83,6 +83,7 @@ module.exports = function (grunt) {
                 'js/**/*.js'
             ]
         },
+
         clean: {
             app: {
                 files: [{
@@ -98,13 +99,14 @@ module.exports = function (grunt) {
         fileblocks: {
             app: {
                 options: {
-                    cwd: '',
+                    cwd: 'dist',
                     rebuild: true,
                     removeFiles: true
                 },
                 src: 'dist/index.html',
                 blocks: {
-                    'js': { src: ['js/app.js'] },
+                    'js': { src: ['j' +
+                        's/app.js'] },
                     'css': { src: 'style/**/*.css' }
                 }
             }

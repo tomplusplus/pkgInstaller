@@ -4,72 +4,108 @@
  */
 'use strict';
 
-//extend Array prototype to have a unique function
-Array.prototype.unique = function(){
-    return this.filter(function onlyUnique(value, index, self) {
-        return self.indexOf(value) === index;
-    });
-};
-
-//Parse String into multifunction array
-function parsePackages(packages){
-    var parsed = [];
-    packages.forEach(function(pkg){
-        var delimiter = pkg.indexOf(": ") >= 0? ": ": ":";
-        parsed.push(pkg.split(delimiter));
-    });
-    return parsed;
-}
+//TODO Check for cycles
 
 
-// Package Graph
-function PackageDependencyGraph(){
-    this.dependencies = {};
-    this.graphIndex = [];
-    this.orderedPackages = [];
-    this.writeOut = function(){
-
+    //extend Array prototype to have a unique function
+    Array.prototype.unique = function(){
+        return this.filter(function onlyUnique(value, index, self) {
+            return self.indexOf(value) === index;
+        });
     };
 
-}
-PackageDependencyGraph.prototype.addDependency = function(pkg,dep){
-    var _this = this;
-    this.graphIndex.push(pkg);
-    if(dep.length > 0) {
-        this.graphIndex.push(dep);
-        if (!this.dependencies.hasOwnProperty(dep)) {
-            this.dependencies[dep] = [];
-        }
-        this.dependencies[dep].push(pkg);
-    }
-
-    //chain dependencies : recursion is fun!!!
-    if(typeof this.dependencies[pkg] !== 'undefined'){
-        this.dependencies[pkg].forEach(function(p){
-            _this.addDependency(p,dep);
+    //Parse String into multifunction array
+    function parsePackages(packages){
+        var parsed = [];
+        packages.forEach(function(pkg){
+            var delimiter = pkg.indexOf(": ") >= 0? ": ": ":";
+            parsed.push(pkg.split(delimiter));
         });
+        return parsed;
     }
-};
 
-PackageDependencyGraph.prototype.orderDependencies = function(){
-    var _this = this;
-    //Get the dependencies
-    var dep = this.dependencies;
-    var keys = Object.keys(dep);
-    keys.sort(function(a, b){
-        return dep[b].unique().length - dep[a].unique().length;
-    });
-    keys.forEach(function(k){
-        _this.orderedPackages.push(k);
-    });
 
-    //Get the packages with no dependencies
-    var indices = this.graphIndex.unique();
-    indices.forEach(function(i){
-        if (!dep.hasOwnProperty(i)){
-            _this.orderedPackages.push(i);
+    // Package Graph - edge counting method
+    function PackageDependencyGraph(){
+        this.dependencies = {};
+        this.orderedPackages = [];
+        this.writeOut = function(){
+
+        };
+
+    }
+    PackageDependencyGraph.prototype.addDependency = function(pkg,dep){
+        if (!this.dependencies.hasOwnProperty(pkg)){
+            this.dependencies[pkg] = [];
         }
+        if(dep.length > 0) {
+            if (!this.dependencies.hasOwnProperty(dep)) {
+                this.dependencies[dep] = [];
+            }
+            this.dependencies[dep].push(pkg);
+        }
+    };
+
+    PackageDependencyGraph.prototype.orderDependencies = function(){
+        var _this = this;
+        this.orderedPackages = Object.keys(this.dependencies);
+        this.orderedPackages.sort(function(a, b){
+            return _this.getEdgeCount(b) - _this.getEdgeCount(a);
+        });
+        return this.orderedPackages;
+    };
+
+    PackageDependencyGraph.prototype.getEdgeCount = function(pkg){
+        var _this = this,
+            count = 0;
+        //recursion is fun!
+        this.dependencies[pkg].unique().forEach(function(n){
+            count += 1 + _this.getEdgeCount(n);
+        });
+        return count;
+    };
+
+
+
+// View logic
+    var input = document.getElementById("pkgPackages"),
+        output = document.getElementById("pkgPackagesOrdered"),
+        packages = [
+            'KittenService: TomInstaller',
+            'Leetmeme: Cyberportal',
+            'Cyberportal: Ice',
+            'CamelCaser: KittenService' ,
+            'Fraudstream: Leetmeme',
+            'Ice: KittenService',
+            'TomInstaller:'
+        ],
+        packagesHtml = '',
+        outputHtml = '',
+        parsedPkgs = parsePackages(packages),
+        pkgGraph = new PackageDependencyGraph();
+
+    packages.forEach(function(pkg){
+        packagesHtml += '<div>'+ pkg +'</div>';
     });
-    return this.orderedPackages;
-};
+
+    if(!input) {
+        input = document.createElement("DIV");
+        output = document.createElement("DIV");
+    }
+
+    input.innerHTML = packagesHtml;
+
+    parsedPkgs.forEach(function(pkg){
+        pkgGraph.addDependency(pkg[0],pkg[1]);
+    });
+    pkgGraph.orderDependencies();
+
+    packages.forEach(function(pkg){
+        packagesHtml += '<div>'+ pkg +'</div>';
+    });
+    pkgGraph.orderedPackages.forEach(function(pkg){
+        outputHtml += '<div>'+ pkg +'</div>';
+    });
+    output.innerHTML = outputHtml;
+
 
