@@ -15,7 +15,8 @@ describe('pkgInstaller', function() {
     });
 
     it('should list all packages in correct order', function() {
-        //var packageList = new PackageList(mockPackages);
+        //var packageGraph = new PackageDependencyGraph();
+        //add packages to package graph
         parsedPackages.forEach(function(pkg){
             //expect each package dependency to have a lower index value than its own.
             //expect to find no cycles
