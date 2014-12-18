@@ -106,7 +106,7 @@
             'CamelCaser: KittenService' ,
             'Fraudstream: Leetmeme',
             'Ice: KittenService',
-            'TomInstaller: CamelCaser'
+            'TomInstaller: '
         ],
         packagesHtml = '',
         outputHtml = '',
