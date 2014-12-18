@@ -6,7 +6,7 @@ describe('pkgInstaller', function() {
         'Cyberportal: Ice',
         'CamelCaser: KittenService' ,
         'Fraudstream: Leetmeme',
-        'Ice: KittenService'
+        'Ice:'
         ],
         parsedPackages = parsePackages(mockPackages),
         packageGraph = new PackageDependencyGraph();
@@ -14,6 +14,7 @@ describe('pkgInstaller', function() {
         parsedPackages.forEach(function(pkg){
             packageGraph.addDependency(pkg[0],pkg[1]);
         });
+        packageGraph.orderDependencies();
 
 
     it('should parse out packages into a multi-dimensional array', function(){
@@ -25,6 +26,16 @@ describe('pkgInstaller', function() {
 
     it('should list all packages in correct order', function() {
         expect(packageGraph).toBeDefined();
-        console.log(packageGraph.graphIndex);
+        console.log(packageGraph.orderedPackages);
+        parsedPackages.forEach(function(pkg){
+           if(pkg.length > 1 && pkg[1].length > 1){ //if package has a dependency, check that it's index is higher than its dependency
+               var p = packageGraph.orderedPackages.indexOf(pkg[0]);
+               var d = packageGraph.orderedPackages.indexOf(pkg[1]);
+               expect((p >= 0)).toEqual(true);
+               expect((d >= 0)).toEqual(true);
+               expect((p > d)).toEqual(true);
+           }
+
+        });
     });
 });

@@ -4,6 +4,14 @@
  */
 'use strict';
 
+//extend Array prototype to have a unique function
+Array.prototype.unique = function(){
+    return this.filter(function onlyUnique(value, index, self) {
+        return self.indexOf(value) === index;
+    });
+};
+
+//Parse String into multifunction array
 function parsePackages(packages){
     var parsed = [];
     packages.forEach(function(pkg){
@@ -13,22 +21,28 @@ function parsePackages(packages){
     return parsed;
 }
 
+
+// Package Graph
 function PackageDependencyGraph(){
     this.dependencies = {};
     this.graphIndex = [];
     this.orderedPackages = [];
-    //TODO write out packages in proper order
+    this.writeOut = function(){
+
+    };
+
 }
 PackageDependencyGraph.prototype.addDependency = function(pkg,dep){
     var _this = this;
     this.graphIndex.push(pkg);
-    this.graphIndex.push(dep);
-    if (!this.dependencies.hasOwnProperty(dep)){
-        this.dependencies[dep] = [];
+    if(dep.length > 0) {
+        this.graphIndex.push(dep);
+        if (!this.dependencies.hasOwnProperty(dep)) {
+            this.dependencies[dep] = [];
+        }
+        this.dependencies[dep].push(pkg);
     }
-    this.dependencies[dep].push(pkg);
 
-    //TODO find a way to chain dependencies together
     //chain dependencies : recursion is fun!!!
     if(typeof this.dependencies[pkg] !== 'undefined'){
         this.dependencies[pkg].forEach(function(p){
@@ -37,7 +51,25 @@ PackageDependencyGraph.prototype.addDependency = function(pkg,dep){
     }
 };
 
-//TODO sort order of dependencies
 PackageDependencyGraph.prototype.orderDependencies = function(){
+    var _this = this;
+    //Get the dependencies
+    var dep = this.dependencies;
+    var keys = Object.keys(dep);
+    keys.sort(function(a, b){
+        return dep[b].unique().length - dep[a].unique().length;
+    });
+    keys.forEach(function(k){
+        _this.orderedPackages.push(k);
+    });
 
+    //Get the packages with no dependencies
+    var indices = this.graphIndex.unique();
+    indices.forEach(function(i){
+        if (!dep.hasOwnProperty(i)){
+            _this.orderedPackages.push(i);
+        }
+    });
+    return this.orderedPackages;
 };
+

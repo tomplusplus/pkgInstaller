@@ -281,7 +281,7 @@ module.exports = function (grunt) {
     });
 
     // Unit Tests
-    grunt.registerTask('test', ['browserify:specs', 'jasmine']);
+    grunt.registerTask('test', ['dev', 'browserify:specs', 'jasmine']);
 
 
     grunt.registerTask('dev', [
