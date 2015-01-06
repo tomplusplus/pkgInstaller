@@ -4,7 +4,6 @@
  */
 'use strict';
 
-
     //extend Array prototype to have a unique function
     Array.prototype.unique = function(){
         return this.filter(function onlyUnique(value, index, self) {
@@ -91,9 +90,6 @@
     };
 
 
-
-
-
 // View logic
     var input = document.getElementById("pkgPackages"),
         output = document.getElementById("pkgPackagesOrdered"),
@@ -136,3 +132,15 @@
     output.innerHTML = outputHtml;
 
 
+
+// method requested by pluralsight for testing
+function getOrderedDependencies(dependencyArray){
+    var parsedDependencies = parsePackages(dependencyArray),
+        graph = new PackageDependencyGraph();
+
+    parsedDependencies.forEach(function(dep){
+        graph.addDependency(dep[0],dep[1]);
+    });
+    graph.orderDependencies();
+    return graph.orderedPackages.toString();
+}
